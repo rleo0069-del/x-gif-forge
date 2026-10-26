@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>X-GIF Forge</title>
+<title>X-GIF Forge by RML</title>
 <style>
 :root { --bg:#0f1419; --card:#1e2732; --accent:#1d9bf0; --text:#e7e9ea; --muted:#71767b; }
 * { box-sizing:border-box; }
@@ -67,7 +67,7 @@ $('generate').onclick = async () => {
     const gif = new GIF({
       workers: 2,
       quality: 10,
-      workerScript: 'https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js'
+      workerScript: 'gif.worker.js'   // local file
     });
 
     for (let i = 0; i < files.length; i++) {
@@ -86,17 +86,11 @@ $('generate').onclick = async () => {
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, targetW, h);
 
-      // Extra safety check
       if (!Number.isInteger(canvas.width) || !Number.isInteger(canvas.height)) {
         throw new Error(`Bad canvas size: ${canvas.width}×${canvas.height}`);
       }
 
-      try {
-        gif.addFrame(canvas, { copy: true, delay });
-      } catch (e) {
-        setStatus(`addFrame failed on image ${i + 1}: ${e.message}`);
-        throw e;
-      }
+      gif.addFrame(canvas, { copy: true, delay });
       URL.revokeObjectURL(img.src);
     }
 
