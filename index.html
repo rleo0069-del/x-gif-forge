@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X-GIF Forge — Open Source GIF Creator for X</title>
+<style>
+:root { --bg:#0f1419; --card:#1e2732; --accent:#1d9bf0; --text:#e7e9ea; --muted:#71767b; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:system-ui,sans-serif; background:var(--bg); color:var(--text); }
+.container { max-width:1100px; margin:0 auto; padding:20px; }
+h1 { margin:0 0 8px; font-size:1.6rem; }
+.subtitle { color:var(--muted); margin-bottom:24px; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+@media(max-width:800px){ .grid { grid-template-columns:1fr; } }
+.card { background:var(--card); border-radius:16px; padding:20px; }
+label { display:block; margin:12px 0 4px; font-size:0.9rem; color:var(--muted); }
+input, select, button, textarea { width:100%; padding:10px 12px; border-radius:10px; border:1px solid #38444d; background:#0f1419; color:var(--text); font-size:1rem; }
+button { background:var(--accent); border:none; cursor:pointer; font-weight:600; margin-top:12px; }
+button:hover { opacity:0.9; }
+button.secondary { background:#38444d; }
+.preview { width:100%; max-height:320px; background:#000; border-radius:12px; display:flex; align-items:center; justify-content:center; overflow:hidden; margin:12px 0; }
+.preview img, .preview video { max-width:100%; max-height:320px; }
+.library { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; margin-top:16px; }
+.lib-item { background:#0f1419; border-radius:12px; overflow:hidden; cursor:pointer; position:relative; }
+.lib-item img { width:100%; height:120px; object-fit:cover; }
+.lib-item .meta { padding:8px; font-size:0.8rem; }
+.badge { position:absolute; top:6px; right:6px; background:#000a; padding:2px 6px; border-radius:8px; font-size:0.7rem; }
+.status { color:var(--muted); font-size:0.85rem; margin-top:8px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>X-GIF Forge</h1>
+  <p class="subtitle">Open-source, client-side GIF creator optimized for X. No accounts, no server uploads.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Create</h2>
+      <label>Source (video or image)</label>
+      <input type="file" id="file" accept="video/*,image/*">
+      <div class="preview" id="preview"><span style="color:#555">Preview</span></div>
+
+      <label>Max width (px) — lower = smaller file</label>
+      <input type="number" id="width" value="480" min="240" max="1080">
+
+      <label>FPS</label>
+      <input type="number" id="fps" value="12" min="6" max="20">
+
+      <label>Max duration (seconds)</label>
+      <input type="number" id="duration" value="5" min="1" max="15" step="0.5">
+
+      <label>Text overlay (optional)</label>
+      <input type="text" id="text" placeholder="Top or bottom text">
+
+      <label>Text position</label>
+      <select id="textPos"><option value="top">Top</option><option value="bottom">Bottom</option></select>
+
+      <button id="generate">Generate Optimized GIF</button>
+      <div class="status" id="status"></div>
+      <button id="download" class="secondary" style="display:none">Download GIF</button>
+      <button id="saveLib" class="secondary" style="display:none">Save to My Library</button>
+    </div>
+
+    <div class="card">
+      <h2>My Library</h2>
+      <input type="search" id="search" placeholder="Search library...">
+      <div class="library" id="library"></div>
+      <button id="export" class="secondary">Export Library (JSON)</button>
+      <label>Import</label>
+      <input type="file" id="import" accept=".json">
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const fileInput = $('file');
+const preview = $('preview');
+const status = $('status');
+let currentBlob = null;
+let currentUrl = null;
+
+// IndexedDB for library
+let db;
+const req = indexedDB.open('XGifForge', 1);
+req.onupgradeneeded = e => e.target.result.createObjectStore('gifs', { keyPath: 'id', autoIncrement: true });
+req.onsuccess = e => { db = e.target.result; loadLibrary(); };
+
+fileInput.onchange = () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  preview.innerHTML = file.type.startsWith('video') 
+    ? `<video src="${url}" controls muted loop style="max-width:100%"></video>`
+    : `<img src="${url}" style="max-width:100%">`;
+};
+
+$('generate').onclick = async () => {
+  const file = fileInput.files[0];
+  if (!file) return alert('Select a file first');
+  status.textContent = 'Processing… (this can take 10–30s)';
+  $('download').style.display = 'none';
+  $('saveLib').style.display = 'none';
+
+  const width = +$('width').value;
+  const fps = +$('fps').value;
+  const maxDur = +$('duration').value;
+  const text = $('text').value.trim();
+  const textPos = $('textPos').value;
+
+  const gif = new GIF({ workers: 2, quality: 10, workerScript: 'https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js' });
+
+  if (file.type.startsWith('video')) {
+    const video = document.createElement('video');
+    video.src = URL.createObjectURL(file);
+    await video.play().catch(()=>{});
+    video.pause();
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const scale = width / video.videoWidth;
+    canvas.width = width;
+    canvas.height = Math.round(video.videoHeight * scale);
+
+    const interval = 1 / fps;
+    const frames = Math.min(Math.floor(maxDur * fps), 350);
+    for (let i = 0; i < frames; i++) {
+      video.currentTime = i * interval;
+      await new Promise(r => video.onseeked = r);
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      if (text) drawText(ctx, text, textPos, canvas);
+      gif.addFrame(ctx, { copy: true, delay: 1000 / fps });
+    }
+  } else {
+    // Static image → single frame GIF (or short loop)
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    await new Promise(r => img.onload = r);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const scale = width / img.width;
+    canvas.width = width;
+    canvas.height = Math.round(img.height * scale);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    if (text) drawText(ctx, text, textPos, canvas);
+    gif.addFrame(ctx, { copy: true, delay: 500 });
+  }
+
+  gif.on('finished', blob => {
+    currentBlob = blob;
+    if (currentUrl) URL.revokeObjectURL(currentUrl);
+    currentUrl = URL.createObjectURL(blob);
+    preview.innerHTML = `<img src="${currentUrl}">`;
+    const sizeMB = (blob.size / 1024 / 1024).toFixed(2);
+    status.textContent = `Done — ${sizeMB} MB (target ≤15 MB)`;
+    $('download').style.display = 'block';
+    $('saveLib').style.display = 'block';
+  });
+  gif.render();
+};
+
+function drawText(ctx, text, pos, canvas) {
+  ctx.font = 'bold 28px Impact, system-ui';
+  ctx.fillStyle = 'white';
+  ctx.strokeStyle = 'black';
+  ctx.lineWidth = 4;
+  ctx.textAlign = 'center';
+  const y = pos === 'top' ? 40 : canvas.height - 20;
+  ctx.strokeText(text, canvas.width / 2, y);
+  ctx.fillText(text, canvas.width / 2, y);
+}
+
+$('download').onclick = () => {
+  const a = document.createElement('a');
+  a.href = currentUrl;
+  a.download = 'x-gif-forge.gif';
+  a.click();
+};
+
+$('saveLib').onclick = () => {
+  const name = prompt('Name this GIF:', 'My GIF') || 'Untitled';
+  const tx = db.transaction('gifs', 'readwrite');
+  tx.objectStore('gifs').add({ name, blob: currentBlob, created: Date.now() });
+  tx.oncomplete = loadLibrary;
+};
+
+function loadLibrary(filter = '') {
+  const lib = $('library');
+  lib.innerHTML = '';
+  const tx = db.transaction('gifs', 'readonly');
+  const req = tx.objectStore('gifs').getAll();
+  req.onsuccess = () => {
+    req.result
+      .filter(g => g.name.toLowerCase().includes(filter.toLowerCase()))
+      .sort((a,b) => b.created - a.created)
+      .forEach(g => {
+        const div = document.createElement('div');
+        div.className = 'lib-item';
+        const url = URL.createObjectURL(g.blob);
+        div.innerHTML = `<img src="${url}"><div class="meta">${g.name}</div>`;
+        div.onclick = () => { currentBlob = g.blob; currentUrl = url; preview.innerHTML = `<img src="${url}">`; };
+        lib.appendChild(div);
+      });
+  };
+}
+
+$('search').oninput = e => loadLibrary(e.target.value);
+
+$('export').onclick = () => {
+  const tx = db.transaction('gifs', 'readonly');
+  tx.objectStore('gifs').getAll().onsuccess = e => {
+    const data = e.target.result.map(g => ({ name: g.name, created: g.created, data: btoa(String.fromCharCode(...new Uint8Array(g.blob))) }));
+    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'x-gif-forge-library.json';
+    a.click();
+  };
+};
+
+$('import').onchange = e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const data = JSON.parse(reader.result);
+    const tx = db.transaction('gifs', 'readwrite');
+    const store = tx.objectStore('gifs');
+    data.forEach(item => {
+      const bytes = Uint8Array.from(atob(item.data), c => c.charCodeAt(0));
+      store.add({ name: item.name, blob: new Blob([bytes], { type: 'image/gif' }), created: item.created });
+    });
+    tx.oncomplete = () => loadLibrary();
+  };
+  reader.readAsText(file);
+};
+</script>
+</body>
+</html>
