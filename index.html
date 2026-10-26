@@ -8,39 +8,40 @@
 :root { --bg:#0f1419; --card:#1e2732; --accent:#1d9bf0; --text:#e7e9ea; --muted:#71767b; }
 * { box-sizing:border-box; }
 body { margin:0; font-family:system-ui,sans-serif; background:var(--bg); color:var(--text); }
-.container { max-width:1200px; margin:0 auto; padding:16px; }
-h1 { margin:0 0 4px; font-size:1.5rem; }
-.subtitle { color:var(--muted); margin-bottom:20px; font-size:0.95rem; }
-.grid { display:grid; grid-template-columns:1.1fr 0.9fr; gap:16px; }
-@media(max-width:900px){ .grid { grid-template-columns:1fr; } }
-.card { background:var(--card); border-radius:16px; padding:18px; }
-label { display:block; margin:10px 0 4px; font-size:0.85rem; color:var(--muted); }
-input, select, button, textarea { width:100%; padding:9px 12px; border-radius:10px; border:1px solid #38444d; background:#0f1419; color:var(--text); font-size:0.95rem; }
-button { background:var(--accent); border:none; cursor:pointer; font-weight:600; margin-top:10px; }
+.container { max-width:1400px; margin:0 auto; padding:24px; }
+h1 { margin:0 0 6px; font-size:1.8rem; }
+.subtitle { color:var(--muted); margin-bottom:24px; font-size:1rem; }
+.grid { display:grid; grid-template-columns:1.15fr 0.85fr; gap:24px; }
+.card { background:var(--card); border-radius:16px; padding:24px; }
+label { display:block; margin:12px 0 6px; font-size:0.9rem; color:var(--muted); }
+input, select, button, textarea { width:100%; padding:12px 14px; border-radius:10px; border:1px solid #38444d; background:#0f1419; color:var(--text); font-size:1rem; }
+button { background:var(--accent); border:none; cursor:pointer; font-weight:600; margin-top:12px; min-height:48px; }
 button:hover { opacity:0.9; }
 button.secondary { background:#38444d; }
-button.small { padding:6px 10px; font-size:0.8rem; width:auto; margin-right:6px; }
-.presets { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
-.preview { width:100%; max-height:280px; background:#000; border-radius:12px; display:flex; align-items:center; justify-content:center; overflow:hidden; margin:10px 0; }
-.preview img, .preview video { max-width:100%; max-height:280px; }
-.library, .gallery { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px; margin-top:12px; }
-.lib-item, .gal-item { background:#0f1419; border-radius:12px; overflow:hidden; cursor:pointer; position:relative; }
-.lib-item img, .gal-item img { width:100%; height:110px; object-fit:cover; }
-.lib-item .meta, .gal-item .meta { padding:6px 8px; font-size:0.75rem; }
-.badge { position:absolute; top:5px; right:5px; background:#000a; padding:2px 6px; border-radius:6px; font-size:0.65rem; }
-.status { color:var(--muted); font-size:0.8rem; margin-top:6px; min-height:1.2em; }
-.tabs { display:flex; gap:8px; margin-bottom:12px; }
-.tab { padding:6px 14px; border-radius:20px; background:#38444d; cursor:pointer; font-size:0.85rem; }
+button.small { padding:8px 14px; font-size:0.9rem; width:auto; margin-right:8px; min-height:40px; }
+.presets { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 16px; }
+.preview { width:100%; max-height:360px; background:#000; border-radius:12px; display:flex; align-items:center; justify-content:center; overflow:hidden; margin:12px 0; position:relative; }
+.preview img, .preview video { max-width:100%; max-height:360px; }
+.preview .count { position:absolute; bottom:10px; right:10px; background:#000a; padding:4px 10px; border-radius:8px; font-size:0.8rem; }
+.library, .gallery { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; margin-top:12px; }
+.lib-item, .gal-item { background:#0f1419; border-radius:12px; overflow:hidden; cursor:pointer; }
+.lib-item img, .gal-item img { width:100%; height:120px; object-fit:cover; }
+.lib-item .meta, .gal-item .meta { padding:8px; font-size:0.8rem; }
+.status { color:var(--muted); font-size:0.9rem; margin-top:8px; min-height:1.2em; white-space:pre-wrap; }
+.tabs { display:flex; gap:8px; margin-bottom:16px; }
+.tab { padding:10px 18px; border-radius:20px; background:#38444d; cursor:pointer; font-size:0.95rem; min-height:42px; display:flex; align-items:center; }
 .tab.active { background:var(--accent); }
+.actions { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+@media(min-width:1000px){ .container { padding:32px; } .preview { max-height:420px; } .preview img, .preview video { max-height:420px; } }
+@media(max-width:900px){ .grid { grid-template-columns:1fr; gap:16px; } .container { padding:12px; } h1 { font-size:1.5rem; } .card { padding:16px; } .preview { max-height:280px; } .preview img, .preview video { max-height:280px; } .library, .gallery { grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); } }
+@media(max-width:480px){ .presets { flex-direction:column; } button.small { width:100%; margin-right:0; } .tab { flex:1; justify-content:center; } }
 </style>
 </head>
 <body>
 <div class="container">
   <h1>X-GIF Forge</h1>
   <p class="subtitle">Open-source, client-side GIF creator optimized for X. #XGIFForge</p>
-
   <div class="grid">
-    <!-- CREATE -->
     <div class="card">
       <h2>Create</h2>
       <div class="presets">
@@ -49,23 +50,17 @@ button.small { padding:6px 10px; font-size:0.8rem; width:auto; margin-right:6px;
         <button class="small" onclick="setPreset('square')">Square Meme</button>
         <button class="small" onclick="setPreset('vertical')">Vertical</button>
       </div>
-
-      <label>Source (video or image)</label>
-      <input type="file" id="file" accept="video/*,image/*">
+      <label>Source (one video or multiple images)</label>
+      <input type="file" id="file" accept="video/*,image/*" multiple>
       <div class="preview" id="preview"><span style="color:#555">Preview</span></div>
-
       <label>Max width (px)</label>
       <input type="number" id="width" value="480" min="240" max="1080">
-
-      <label>FPS</label>
-      <input type="number" id="fps" value="12" min="6" max="20">
-
-      <label>Max duration (seconds)</label>
+      <label>FPS (frames per second)</label>
+      <input type="number" id="fps" value="8" min="2" max="20">
+      <label>Max duration (seconds) — for video only</label>
       <input type="number" id="duration" value="4" min="1" max="12" step="0.5">
-
       <label>Quality (lower = better, slower)</label>
       <input type="number" id="quality" value="10" min="1" max="20">
-
       <label>Dithering</label>
       <select id="dither">
         <option value="">None</option>
@@ -74,7 +69,6 @@ button.small { padding:6px 10px; font-size:0.8rem; width:auto; margin-right:6px;
         <option value="Stucki">Stucki</option>
         <option value="Atkinson">Atkinson</option>
       </select>
-
       <label>Crop (optional, % of original)</label>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
         <input type="number" id="cropX" placeholder="X %" value="0" min="0" max="100">
@@ -82,26 +76,24 @@ button.small { padding:6px 10px; font-size:0.8rem; width:auto; margin-right:6px;
         <input type="number" id="cropW" placeholder="Width %" value="100" min="10" max="100">
         <input type="number" id="cropH" placeholder="Height %" value="100" min="10" max="100">
       </div>
-
       <label>Text overlay (optional)</label>
       <input type="text" id="text" placeholder="Text">
       <label>Text position</label>
       <select id="textPos"><option value="top">Top</option><option value="bottom">Bottom</option></select>
-
       <button id="generate">Generate Optimized GIF</button>
       <div class="status" id="status"></div>
-      <button id="download" class="secondary" style="display:none">Download GIF</button>
-      <button id="saveLib" class="secondary" style="display:none">Save to My Library</button>
-      <button id="shareX" class="secondary" style="display:none">Share on X with #XGIFForge</button>
+      <div class="actions" id="actions" style="display:none">
+        <button id="download">Download GIF</button>
+        <button id="saveShare" class="secondary">Save / Share (Mobile)</button>
+        <button id="saveLib" class="secondary">Save to My Library</button>
+        <button id="shareX" class="secondary">Share on X with #XGIFForge</button>
+      </div>
     </div>
-
-    <!-- LIBRARY + GALLERY -->
     <div class="card">
       <div class="tabs">
         <div class="tab active" onclick="switchTab('mine')">My Library</div>
         <div class="tab" onclick="switchTab('community')">Community Gallery</div>
       </div>
-
       <div id="mine-tab">
         <input type="search" id="search" placeholder="Search my library...">
         <div class="library" id="library"></div>
@@ -109,54 +101,66 @@ button.small { padding:6px 10px; font-size:0.8rem; width:auto; margin-right:6px;
         <label>Import</label>
         <input type="file" id="import" accept=".json">
       </div>
-
       <div id="community-tab" style="display:none">
-        <p style="font-size:0.85rem;color:var(--muted);margin:0 0 10px">
-          GIFs submitted via Pull Request to <code>gallery.json</code>
-        </p>
+        <p style="font-size:0.85rem;color:var(--muted);margin:0 0 10px">GIFs submitted via Pull Request to <code>gallery.json</code></p>
         <div class="gallery" id="gallery"></div>
-        <button class="secondary" onclick="window.open('https://github.com/YOUR_USERNAME/YOUR_REPO/edit/main/gallery.json','_blank')">
-          Contribute a GIF (open gallery.json)
-        </button>
+        <button class="secondary" onclick="window.open('https://github.com/rleo0069-del/x-gif-forge/edit/main/gallery.json','_blank')">Contribute a GIF (open gallery.json)</button>
       </div>
     </div>
   </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 const fileInput = $('file');
 const preview = $('preview');
 const status = $('status');
+const actions = $('actions');
 let currentBlob = null;
 let currentUrl = null;
 
-// IndexedDB
 let db;
 const req = indexedDB.open('XGifForge', 1);
 req.onupgradeneeded = e => e.target.result.createObjectStore('gifs', { keyPath: 'id', autoIncrement: true });
 req.onsuccess = e => { db = e.target.result; loadLibrary(); };
 
 function setPreset(type) {
-  if (type === 'mobile') {
-    $('width').value = 400; $('fps').value = 10; $('duration').value = 4; $('quality').value = 12;
-  } else if (type === 'web') {
-    $('width').value = 640; $('fps').value = 15; $('duration').value = 6; $('quality').value = 8;
-  } else if (type === 'square') {
-    $('width').value = 480; $('fps').value = 12; $('duration').value = 4; $('quality').value = 10;
-  } else if (type === 'vertical') {
-    $('width').value = 360; $('fps').value = 12; $('duration').value = 5; $('quality').value = 10;
-  }
+  if (type === 'mobile') { $('width').value = 400; $('fps').value = 8; $('duration').value = 4; $('quality').value = 12; }
+  else if (type === 'web') { $('width').value = 640; $('fps').value = 12; $('duration').value = 6; $('quality').value = 8; }
+  else if (type === 'square') { $('width').value = 480; $('fps').value = 10; $('duration').value = 4; $('quality').value = 10; }
+  else if (type === 'vertical') { $('width').value = 360; $('fps').value = 10; $('duration').value = 5; $('quality').value = 10; }
 }
 
 fileInput.onchange = () => {
-  const file = fileInput.files[0];
-  if (!file) return;
-  const url = URL.createObjectURL(file);
-  preview.innerHTML = file.type.startsWith('video')
-    ? `<video src="${url}" controls muted loop style="max-width:100%"></video>`
-    : `<img src="${url}" style="max-width:100%">`;
+  const files = Array.from(fileInput.files);
+  if (!files.length) {
+    preview.innerHTML = '<span style="color:#555">Preview</span>';
+    return;
+  }
+  const first = files[0];
+  const url = URL.createObjectURL(first);
+  preview.innerHTML = '';
+  if (first.type.startsWith('video')) {
+    const vid = document.createElement('video');
+    vid.src = url;
+    vid.controls = true;
+    vid.muted = true;
+    vid.style.maxWidth = '100%';
+    vid.style.maxHeight = '280px';
+    preview.appendChild(vid);
+  } else {
+    const img = document.createElement('img');
+    img.src = url;
+    img.style.maxWidth = '100%';
+    img.style.maxHeight = '280px';
+    preview.appendChild(img);
+    if (files.length > 1) {
+      const badge = document.createElement('div');
+      badge.className = 'count';
+      badge.textContent = files.length + ' images';
+      preview.appendChild(badge);
+    }
+  }
 };
 
 function drawText(ctx, text, pos, canvas) {
@@ -171,86 +175,126 @@ function drawText(ctx, text, pos, canvas) {
   ctx.fillText(text, canvas.width / 2, y);
 }
 
+function setStatus(msg) { status.textContent = msg; console.log(msg); }
+
+function safeInt(n) { return Math.max(1, Math.round(Number(n) || 1)); }
+
 $('generate').onclick = async () => {
-  const file = fileInput.files[0];
-  if (!file) return alert('Select a file first');
-  status.textContent = 'Processing…';
-  $('download').style.display = 'none';
-  $('saveLib').style.display = 'none';
-  $('shareX').style.display = 'none';
+  const files = Array.from(fileInput.files);
+  if (!files.length) return alert('Select a file or images first');
+  setStatus('Starting…');
+  actions.style.display = 'none';
 
-  const width = +$('width').value;
-  const fps = +$('fps').value;
-  const maxDur = +$('duration').value;
-  const quality = +$('quality').value;
-  const dither = $('dither').value || false;
-  const text = $('text').value.trim();
-  const textPos = $('textPos').value;
-  const cropX = +$('cropX').value / 100;
-  const cropY = +$('cropY').value / 100;
-  const cropW = +$('cropW').value / 100;
-  const cropH = +$('cropH').value / 100;
+  try {
+    const targetWidth = safeInt($('width').value);
+    const fps = +$('fps').value || 8;
+    const maxDur = +$('duration').value || 4;
+    const quality = +$('quality').value || 10;
+    const dither = $('dither').value || false;
+    const text = $('text').value.trim();
+    const textPos = $('textPos').value;
+    const cropX = Math.max(0, Math.min(1, +$('cropX').value / 100 || 0));
+    const cropY = Math.max(0, Math.min(1, +$('cropY').value / 100 || 0));
+    const cropW = Math.max(0.1, Math.min(1, +$('cropW').value / 100 || 1));
+    const cropH = Math.max(0.1, Math.min(1, +$('cropH').value / 100 || 1));
 
-  const gif = new GIF({
-    workers: 2,
-    quality,
-    dither,
-    workerScript: 'https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js'
-  });
+    const gif = new GIF({
+      workers: 2,
+      quality,
+      dither,
+      workerScript: 'https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js'
+    });
 
-  if (file.type.startsWith('video')) {
-    const video = document.createElement('video');
-    video.src = URL.createObjectURL(file);
-    await new Promise(r => { video.onloadeddata = r; video.load(); });
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const srcW = video.videoWidth * cropW;
-    const srcH = video.videoHeight * cropH;
-    const scale = width / srcW;
-    canvas.width = width;
-    canvas.height = Math.round(srcH * scale);
+    const delay = Math.round(1000 / fps);
 
-    const interval = 1 / fps;
-    const frames = Math.min(Math.floor(maxDur * fps), 350);
-    for (let i = 0; i < frames; i++) {
-      video.currentTime = i * interval;
-      await new Promise(r => video.onseeked = r);
-      ctx.drawImage(video,
-        video.videoWidth * cropX, video.videoHeight * cropY, srcW, srcH,
-        0, 0, canvas.width, canvas.height);
-      drawText(ctx, text, textPos, canvas);
-      gif.addFrame(ctx, { copy: true, delay: 1000 / fps });
+    if (files[0].type.startsWith('video')) {
+      setStatus('Loading video…');
+      const video = document.createElement('video');
+      video.muted = true;
+      video.playsInline = true;
+      video.src = URL.createObjectURL(files[0]);
+      await new Promise((resolve, reject) => {
+        video.onloadedmetadata = resolve;
+        video.onerror = () => reject(new Error('Video failed to load'));
+        setTimeout(() => reject(new Error('Video load timeout')), 10000);
+      });
+
+      const srcX = Math.round(video.videoWidth * cropX);
+      const srcY = Math.round(video.videoHeight * cropY);
+      const srcW = Math.max(1, Math.round(video.videoWidth * cropW));
+      const srcH = Math.max(1, Math.round(video.videoHeight * cropH));
+      const canvasW = targetWidth;
+      const canvasH = Math.max(1, Math.round(srcH * (targetWidth / srcW)));
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvasW;
+      canvas.height = canvasH;
+
+      const interval = 1 / fps;
+      const frames = Math.min(Math.floor(maxDur * fps), 350);
+      setStatus(`Extracting ${frames} frames…`);
+
+      for (let i = 0; i < frames; i++) {
+        video.currentTime = i * interval;
+        await new Promise((resolve, reject) => {
+          const timeout = setTimeout(() => reject(new Error('Seek timeout')), 5000);
+          video.onseeked = () => { clearTimeout(timeout); resolve(); };
+        });
+        ctx.drawImage(video, srcX, srcY, srcW, srcH, 0, 0, canvasW, canvasH);
+        drawText(ctx, text, textPos, canvas);
+        gif.addFrame(ctx, { copy: true, delay });
+        if (i % 5 === 0) setStatus(`Extracting frames… ${i + 1}/${frames}`);
+      }
+    } else {
+      setStatus(`Processing ${files.length} image(s)…`);
+      let count = 0;
+      for (const file of files) {
+        if (!file.type.startsWith('image')) continue;
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = () => reject(new Error('Image failed to load'));
+        });
+
+        const srcX = Math.round(img.width * cropX);
+        const srcY = Math.round(img.height * cropY);
+        const srcW = Math.max(1, Math.round(img.width * cropW));
+        const srcH = Math.max(1, Math.round(img.height * cropH));
+        const canvasW = targetWidth;
+        const canvasH = Math.max(1, Math.round(srcH * (targetWidth / srcW)));
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvasW;
+        canvas.height = canvasH;
+
+        ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, canvasW, canvasH);
+        drawText(ctx, text, textPos, canvas);
+        gif.addFrame(ctx, { copy: true, delay });
+        URL.revokeObjectURL(img.src);
+        count++;
+        setStatus(`Processed ${count}/${files.length} images`);
+      }
     }
-  } else {
-    const img = new Image();
-    img.src = URL.createObjectURL(file);
-    await new Promise(r => img.onload = r);
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const srcW = img.width * cropW;
-    const srcH = img.height * cropH;
-    const scale = width / srcW;
-    canvas.width = width;
-    canvas.height = Math.round(srcH * scale);
-    ctx.drawImage(img,
-      img.width * cropX, img.height * cropY, srcW, srcH,
-      0, 0, canvas.width, canvas.height);
-    drawText(ctx, text, textPos, canvas);
-    gif.addFrame(ctx, { copy: true, delay: 400 });
-  }
 
-  gif.on('finished', blob => {
-    currentBlob = blob;
-    if (currentUrl) URL.revokeObjectURL(currentUrl);
-    currentUrl = URL.createObjectURL(blob);
-    preview.innerHTML = `<img src="${currentUrl}">`;
-    const sizeMB = (blob.size / 1024 / 1024).toFixed(2);
-    status.textContent = `Done — ${sizeMB} MB`;
-    $('download').style.display = 'block';
-    $('saveLib').style.display = 'block';
-    $('shareX').style.display = 'block';
-  });
-  gif.render();
+    setStatus('Encoding GIF… (this can take a while)');
+    gif.on('finished', blob => {
+      currentBlob = blob;
+      if (currentUrl) URL.revokeObjectURL(currentUrl);
+      currentUrl = URL.createObjectURL(blob);
+      preview.innerHTML = `<img src="${currentUrl}">`;
+      const sizeMB = (blob.size / 1024 / 1024).toFixed(2);
+      setStatus(`Done — ${sizeMB} MB`);
+      actions.style.display = 'flex';
+    });
+    gif.on('error', err => setStatus('GIF encoding error: ' + err.message));
+    gif.render();
+  } catch (err) {
+    setStatus('Error: ' + err.message);
+    console.error(err);
+  }
 };
 
 $('download').onclick = () => {
@@ -258,6 +302,20 @@ $('download').onclick = () => {
   a.href = currentUrl;
   a.download = 'x-gif-forge.gif';
   a.click();
+};
+
+$('saveShare').onclick = async () => {
+  if (!currentBlob) return;
+  const file = new File([currentBlob], 'x-gif-forge.gif', { type: 'image/gif' });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: 'X-GIF Forge', text: 'Made with X-GIF Forge #XGIFForge' });
+    } catch (err) {
+      if (err.name !== 'AbortError') alert('Share failed — try Download instead.');
+    }
+  } else {
+    $('download').click();
+  }
 };
 
 $('shareX').onclick = () => {
@@ -291,8 +349,7 @@ function loadLibrary(filter = '') {
           currentBlob = g.blob;
           currentUrl = url;
           preview.innerHTML = `<img src="${url}">`;
-          $('download').style.display = 'block';
-          $('shareX').style.display = 'block';
+          actions.style.display = 'flex';
         };
         lib.appendChild(div);
       });
@@ -304,11 +361,7 @@ $('search').oninput = e => loadLibrary(e.target.value);
 $('export').onclick = () => {
   const tx = db.transaction('gifs', 'readonly');
   tx.objectStore('gifs').getAll().onsuccess = e => {
-    const data = e.target.result.map(g => ({
-      name: g.name,
-      created: g.created,
-      data: btoa(String.fromCharCode(...new Uint8Array(g.blob)))
-    }));
+    const data = e.target.result.map(g => ({ name: g.name, created: g.created, data: btoa(String.fromCharCode(...new Uint8Array(g.blob))) }));
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -357,9 +410,9 @@ async function loadGallery() {
       div.onclick = () => window.open(item.url, '_blank');
       gal.appendChild(div);
     });
-    if (!items.length) gal.innerHTML = '<p style="color:#555">No community GIFs yet. Be the first to contribute!</p>';
+    if (!items.length) gal.innerHTML = '<p style="color:#555">No community GIFs yet.</p>';
   } catch {
-    gal.innerHTML = '<p style="color:#555">No gallery.json found yet. Create one and add GIFs via PR.</p>';
+    gal.innerHTML = '<p style="color:#555">No gallery.json found yet.</p>';
   }
 }
 </script>
