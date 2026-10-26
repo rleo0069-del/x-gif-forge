@@ -258,12 +258,10 @@ $('generate').onclick = async () => {
       setStatus(`Done — ${sizeMB} MB`);
       actions.style.display = 'flex';
     });
-    gif.on('error', err => {
-      setStatus('GIF encoding error: ' + err.message);
-    });
+    gif.on('error', err => setStatus('GIF encoding error: ' + err.message));
     gif.render();
   } catch (err) {
-    setStatus('Error: ' + err.message + '\nCheck console for details.');
+    setStatus('Error: ' + err.message);
     console.error(err);
   }
 };
