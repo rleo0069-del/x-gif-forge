@@ -53,34 +53,14 @@ button.secondary { background:#38444d; }
 const $ = id => document.getElementById(id);
 let currentUrl = null;
 
-fileInput.onchange = () => {
-  const files = Array.from(fileInput.files);
-  if (!files.length) {
-    preview.innerHTML = '<span style="color:#555">Preview</span>';
-    return;
-  }
-  const first = files[0];
-  const url = URL.createObjectURL(first);
-  preview.innerHTML = '';
-  if (first.type.startsWith('video')) {
-    const vid = document.createElement('video');
-    vid.src = url;
-    vid.controls = true;
-    vid.muted = true;
-    vid.style.maxWidth = '100%';
-    vid.style.maxHeight = '280px';
-    preview.appendChild(vid);
-  } else {
-    const img = document.createElement('img');
-    img.src = url;
-    img.style.maxWidth = '100%';
-    img.style.maxHeight = '280px';
-    preview.appendChild(img);
-    if (files.length > 1) {
-      const badge = document.createElement('div');
-      badge.className = 'count';
-      badge.textContent = files.length + ' images';
-      preview.appendChild(badge);
+$('file').onchange = () => {
+  const f = $('file').files[0];
+  if (!f) return;
+  const url = URL.createObjectURL(f);
+  $('preview').innerHTML = f.type.startsWith('video')
+    ? `<video src="${url}" muted controls style="max-width:100%"></video>`
+    : `<img src="${url}" style="max-width:100%">`;
+};
 
 function setStatus(t) { $('status').textContent = t; }
 
